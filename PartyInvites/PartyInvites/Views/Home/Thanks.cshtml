@@ -1,0 +1,47 @@
+﻿@model PartyInvites.Models.GuestResponse
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Dziękujemy</title>
+</head>
+<body>
+
+    @{ 
+        try
+        {
+            WebMail.SmtpServer = "smtp.przyklad.pl";
+            WebMail.SmtpPort = 587;
+            WebMail.EnableSsl = true;
+            WebMail.UserName = "nazwaUżytkownikaSMTP";
+            WebMail.Password = "hasłoUżytkownikaSMTP";
+            WebMail.From = "rsvp@przyklad.pl";
+
+            WebMail.Send("gospodarz-przyjecia@przyklad.pl", "powiadomienie RSVP", 
+                Model.Name + ((Model.WillAttend ?? false) ? "" : "nie")
+                + "przyjdzie");
+        }
+        catch (Exception)
+        {
+            @:<b>Przepraszamy - nie można wysłać wiadomości RSVP.</b>
+        }
+        }
+    <div> 
+        <h1>Dziękujemy, @Model.Name!</h1>
+        @if (Model.WillAttend == true)
+        {
+            @:Cieszymy się, że przyjdziesz do nas. Napoje są już w lodówce!
+        }
+        else
+        {
+            @:Przykro nam, że nie możesz się zjawić, ale dziękujemy za informację.
+        }
+    </div>
+</body>
+</html>
